@@ -1,0 +1,248 @@
+---
+title: "Assignment"
+author: "Thi Thu Hien LE"
+date: "2023-08-25"
+output:
+  word_document: default
+  pdf_document: default
+---
+
+——————————————————————  
+
+Import the dataset and explore (Identify the types of variables, number of observations and view first few rows).  
+
+```{r}
+library(ISLR)
+library(readr)
+Realestate <- read_csv("Realestate.csv")
+attach(Realestate)
+dim(Realestate)
+names(Realestate)
+sapply(Realestate, class)
+```
+
+There are 413 observations with 5 variables in the data set. The five variables are age, year, distanceMRT, convstore and price. All five variables are numeric.
+
+—————————————————————— 
+
+Construct the matrix plot and correlation matrix. Comment on the relationship among variables.
+
+```{r}
+pairs(Realestate, panel=panel.smooth) #graphical representation
+```
+
+From the above figure, it can be depicted that:
+- There is a strong linear relationship between ‘distanceMRT’ and ‘price’ variables.
+- There is a very weak relationship between ‘convstore’ and ‘price’; 'age' and 'distanceMRT'; 'age' and 'price'; 'distanceMRT' and 'convstore' variables
+- Note that there is no significant relationship between ‘age’ and ‘year’; ‘year’ and ‘distanceMRT’; 'year' and 'convstore'; 'year' and 'price' variables.
+
+```{r}
+cor(Realestate) #correlation
+```
+
+The correlation between ‘price’ and ‘convstore’ is 0.6126 implying a strong positive linear relationship. 
+The correlation between ‘distanceMRT’ and ‘convstore’ is -0.6053 implying a strong negative linear relationship. 
+The correlation between ‘distanceMRT’ and ‘price’ is -0.694 implying a strong negative linear relationship. 
+
+The correlation between ‘age’ and ‘price’ is -0.211 implying a weak negative linear relationship. 
+
+There is no significant linear relationship between the rest of them.
+
+—————————————————————— 
+
+Simple Linear Regression  
+i.	Fit a model to predict price in terms of distanceMRT. 
+
+```{r}
+plot(price~distanceMRT)
+cor(distanceMRT, price)
+LinearModel <- lm(price~distanceMRT)
+summary(LinearModel)
+```
+
+ii.	Test the significance of the slope parameter (Write down the relevant hypothesis). 
+
+H0 : β = 0
+There is no linear relationship between price and distanceMRT
+vs.
+H1 : β ̸= 0
+There is some linear relationship between price and distanceMRT
+
+The p-value is < 2.2e-16 which is less than 0.05. [Refer to the output of part (i)]
+We have strong evidence to reject the null hypothesis at 5% level of significance and support the alternative
+hypothesis H1 : β ̸= 0.
+Therefore, strong evidence to support that there is a significant linear relationship between price and distanceMRT.
+
+iii. Interpret the slope and the intercept. 
+
+Estimate of Intercept, αˆ = 4419.13375
+Estimate of the slope parameter, βˆ = -0.69516
+The resulting model can be written as:
+priceˆ = 7.032594 + 0.047537distanceMRT
+(OR)
+E[priceˆ ] = 7.032594 + 0.047537distanceMRT
+
+iv. Discuss the accuracy of the parameter estimates (standard errors/confidence intervals). 
+
+By looking at the Model Summary Output,Standard errors of the estimates: 
+On average the estimated value for intercept, αˆ can be differ from the true value by 59.20875 units.
+On average the estimated value for slope parameter, βˆ can be differ from the true value by 0.03557 units.
+
+```{r}
+confint(LinearModel)
+```
+
+95% CI for αˆ - [4302.7439928, 4535.5235074]
+In the absence of any distanceMRT, price will, on average, fall somewhere between 4302744 and 4535524 units with 95% chance.
+
+95% CI for βˆ - [-0.7650898, -0.7650898]
+
+v. 	Discuss the overall accuracy of the model (R2, residual standard error etc). 
+
+```{r}
+anova(LinearModel)
+```
+p-value = 2.2e-16 is extremely small. Supports strong linear relationship.
+Estimated V (Y )  = √ 831597 = 911.919404 = Residual standard error (in Model Summary Output)
+R2 = 0.4816 [Refer the output of part (ii)]
+48.16% variation in price is explained by the regression model.
+On average, the predicted values deviate from the true regression line by 911.919404.
+
+vi. Check for the model assumptions. 
+
+```{r}
+par(mfrow=c(2,2))
+plot(LinearModel)
+```
+
+Graph 1:
+There are number of influential observations.
+Graph 2: Normal Q-Q plot
+Appears to be a straight line. Therefore normality assumption is met.
+Graph 3:
+There are number of influential observations.
+Graph 4:
+There are number of influential observations.
+
+vii. Write down the model equation. 
+
+priceˆ = 7.032594 + 0.047537distanceMRT
+(OR)
+E[priceˆ ] = 7.032594 + 0.047537distanceMRT
+
+viii. Predict the unit price of a house which is 500 meters away from MRT using the model in part vii. 
+
+```{r}
+predict(LinearModel,list(distanceMRT = 500))
+```
+
+—————————————————————— 
+
+Multiple Linear Regression  
+i.	Fit a model to predict price in terms of all the other variables in the dataset. 
+
+```{r}
+model=lm(price~age+year+convstore, data = Realestate)
+summary(model)
+```
+
+ii.	Remove insignificant variables (if there is any) and fit a model including the rest of the variables. 
+
+Estimate of Intercept = αˆ = -3.502e+05
+Estimate of the Slope corresponding to age = βˆ1 = -2.661e+01
+Estimate of the Slope corresponding to year = βˆ2 = 1.756e+02
+Estimate of the Slope corresponding to convstore = βˆ3 = 2.679e+02
+
+It can be seen clearly that the coefficient of age and convstore are highly significant. 
+
+However, the coefficient of year is insignificant. (Note that the p-value of coefficient of year, 0.216 > 0.05) Thus, price in year does not have any significant effect on the price.
+
+```{r}
+multi_model2=lm(price~age+convstore, data = Realestate)
+summary(multi_model2)
+```
+
+iii.	Add the interaction term distanceMRT * convstore to the model above (part ii). 
+
+```{r}
+multi_model3=lm(price~age+convstore+distanceMRT*convstore, data = Realestate)
+summary(multi_model3)
+```
+
+iv. Comment on the significance of the parameters of the model above (part iii). 
+
+Using hypothesis testing as mentioned above and from the output, it can be seen clearly that the interaction
+term is highly significant.
+
+v. 	Check for the model assumptions (model in part iii). 
+
+```{r}
+par(mfrow=c(2,2))
+plot(multi_model3)
+```
+
+Graph 1:
+There are number of influential observations.
+Graph 2: Normal Q-Q plot
+Appears to be a straight line. Therefore normality assumption is met.
+Graph 3:
+There are number of influential observations.
+Graph 4:
+There are number of influential observations.
+
+vi. Compare and comment on the accuracy of the models in part ii and part iii. 
+
+```{r}
+summary(multi_model2)
+```
+R2 = 43.33%
+
+
+```{r}
+summary(multi_model3)
+```
+
+R2 = 61.91%
+
+We can see that model in part iii is more accurate than model in part ii
+
+—————————————————————— 
+
+Polynomial Regression and Transformations  
+i. 	Fit a polynomial regression model to predict price using distanceMRT of order 3 and test the model significance. Give the resulting model. 
+
+```{r}
+poly_model=lm(price~distanceMRT+I(distanceMRT*distanceMRT)+I(distanceMRT*distanceMRT*distanceMRT), data = Realestate)
+summary(poly_model)
+```
+
+Using hypothesis testing and from the above output, it can be seen clearly that ‘distanceMRT’
+variable with order 2 and order 3 are significant. We can keep them in the model.
+
+ii. 	Construct a scatter plot to visualize the relationship between price and log transformed values of distanceMRT (price vs log(distanceMRT)). 
+
+```{r}
+Realestate$logdistanceMRT=log(Realestate$distanceMRT)
+plot(Realestate$price, Realestate$logdistanceMRT)
+```
+
+
+iii.	Fit a model to predict price in terms of log(distanceMRT). 
+
+```{r}
+LinearModel2<-lm(price~Realestate$logdistanceMRT)
+summary(LinearModel2)
+```
+
+
+iv.	Plot the straight line (regression line) corresponding to part iii within the scatter plot in part ii (i.e., draw both the scatter plot and the fitted line on one plot). 
+
+```{r}
+confint(LinearModel2)
+```
+
+```{r}
+plot(price~Realestate$logdistanceMRT, xlab="Price", ylab = "distanceMRT log tranformed")
+abline(a= 9587.8582, b=-925.372, col = "red")
+```
+

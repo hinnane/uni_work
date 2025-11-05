@@ -1,0 +1,1 @@
+This project analysed customer behaviour data from Southern Cross Goods to explore factors influencing shopping patterns, satisfaction, and income relationships. Statistical tests—including the Chi-Square test, t-test, ANOVA, and linear regression—were applied using R.

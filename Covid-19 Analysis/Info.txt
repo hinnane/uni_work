@@ -1,0 +1,1 @@
+This project aimed to analyze COVID-19 patient data to identify trends in infection distribution, symptom patterns, hospitalization factors, and recovery outcomes using R programming and several data analysis libraries, including readr, ggplot2, dplyr, tidyverse, and stats.

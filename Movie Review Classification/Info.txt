@@ -1,0 +1,1 @@
+This project create a complete program to perform sentiment classification for movie reviews from feature extraction to classification. For a given review, this program will be able to predict whether it is positive i.e. like the movie, or negative, i.e. dislike the movie. 

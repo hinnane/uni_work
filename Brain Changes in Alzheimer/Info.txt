@@ -1,0 +1,3 @@
+This project's main goal is to clarify the relations between the cholinergic neurotransmitters and glial responses in these areas of the brain, which are considered to be the primary regions affected by neurodegenerative conditions such as Alzheimer's. With the help of Python and the ABC Atlas Access API, I was able to load and filter metadata from single cells, choose important genes of interest (Ache, Chat, Gfap, S100b, Aif1) and create visual and statistical summaries. Heatmaps and spatial maps were used to analyse the difference between ten coronal brain slices (C57BL6J-638850.50.54 - C57BL6J-638850.50.44).
+
+The neuroscientist requires additional work for his own work, including different genes but with the same analysis (Aqp4, Aqp11, Aqp5, Aqp6, Aqp1).
